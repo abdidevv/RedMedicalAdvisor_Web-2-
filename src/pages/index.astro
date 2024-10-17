@@ -1,0 +1,24 @@
+---
+import Navbar from '../components/Navbar.astro';
+import Layout from '../layouts/Layout.astro';
+
+---
+
+<Layout title="Red Medical Advisor.">
+	<main>
+		<Navbar></Navbar>
+	</main>
+</Layout>
+
+<style>
+	main {
+		margin: auto;
+		color: white;
+	}
+	.link-card-grid {
+		display: grid;
+		grid-template-columns: repeat(auto-fit, minmax(24ch, 1fr));
+		gap: 2rem;
+		padding: 0;
+	}
+</style>
