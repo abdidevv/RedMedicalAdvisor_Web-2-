@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useEffect, useCallback } from 'react'
 import * as React from "react"
 import './Recursos.css'
 import { Check } from "lucide-react"
@@ -51,6 +51,7 @@ const getInfo = () => [
 
     {
       id: "2",
+      status: "neurociencia",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ",
       thumbnail: "/placeholder.svg?height-200&width=300",
@@ -59,6 +60,7 @@ const getInfo = () => [
 
     {
       id: "3",
+      status: "neurociencia",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ",
       thumbnail: "/placeholder.svg?height-200&width=300",
@@ -67,6 +69,7 @@ const getInfo = () => [
 
     {
       id: "4",
+      status: "cerebro",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ",
       thumbnail: "/placeholder.svg?height-200&width=300",
@@ -82,7 +85,7 @@ const getInfo = () => [
     },
 
     {
-      id: "6",
+      id: "14",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ", 
       thumbnail: "/placeholder.svg?height-200&width=300",
@@ -123,7 +126,7 @@ const getInfo = () => [
 
 
     {
-      id: "6",
+      id: "12",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ", 
       thumbnail: "/placeholder.svg?height-200&width=300",
@@ -153,6 +156,21 @@ const getInfo = () => [
     const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true)
     const [showNeurociencia, setShowNeurociencia] = React.useState<Checked>(false)
     const [showCerebro, setShowCerebro] = React.useState<Checked>(false)
+
+
+    useEffect(() => {
+      setInfo(
+        getInfo().filter((item) => {
+          if (showStatusBar && item.status === "anatomia") return true
+          if (showNeurociencia && item.status === "neurociencia") return true
+          if (showCerebro && item.status === "cerebro") return true
+          if(!showStatusBar && !showNeurociencia && !showCerebro) return true
+          return false
+        })
+      )
+    }, [showStatusBar, showNeurociencia, showCerebro])
+
+    const [orderBy, setOrderBy] = React.useState('')
 
   return (
     <>
