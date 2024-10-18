@@ -32,6 +32,7 @@ type Checked = DropdownMenuCheckboxItemProps["checked"]
 
 interface Recursos {
     id: string
+    status: string
     title: string
     description: string
     thumbnail: string
@@ -55,7 +56,7 @@ const getInfo = () => [
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ",
       thumbnail: "/placeholder.svg?height-200&width=300",
-      tag: "Articulo"
+      tag: "Artículo"
     },
 
     {
@@ -78,6 +79,7 @@ const getInfo = () => [
 
     {
       id: "5",
+      status: "anatomia",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ",
       thumbnail: "/placeholder.svg?height-200&width=300",
@@ -86,22 +88,25 @@ const getInfo = () => [
 
     {
       id: "14",
+      status: "anatomia",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ", 
       thumbnail: "/placeholder.svg?height-200&width=300",
-      tag: "Articulo"
+      tag: "Artículo"
     },
 
     {
       id: "7",
+      status: "cerebro",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ", 
       thumbnail: "/placeholder.svg?height-200&width=300",
-      tag: "Presentacion"
+      tag: "Presentación"
     },
 
     {
       id: "8",
+      status: "neurociencia",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ", 
       thumbnail: "/placeholder.svg?height-200&width=300",
@@ -110,23 +115,26 @@ const getInfo = () => [
 
     {
       id: "9",
+      status: "neurociencia",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ", 
       thumbnail: "/placeholder.svg?height-200&width=300",
-      tag: "Articulo"
+      tag: "Artículo"
     },
 
     {
       id: "10",
+      status: "anatomia",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ", 
       thumbnail: "/placeholder.svg?height-200&width=300",
-      tag: "Presentacion"
+      tag: "Presentación"
     },
 
 
     {
       id: "12",
+      status: "anatomia",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ", 
       thumbnail: "/placeholder.svg?height-200&width=300",
@@ -135,10 +143,11 @@ const getInfo = () => [
 
     {
       id: "6",
+      status: "neurociencias",
       title: "Lorem ipsum dolor",
       description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do ejusmod tempor incididunt ", 
       thumbnail: "/placeholder.svg?height-200&width=300",
-      tag: "Articulo"
+      tag: "Artículo"
     },
  ];
 
@@ -153,22 +162,45 @@ const getInfo = () => [
       setSelected(id);
     };
 
-    const [showStatusBar, setShowStatusBar] = React.useState<Checked>(true)
+    const [loading, setLoading] = useState(true);
+
+    const [showAnatomia, setShowAnatomia] = React.useState<Checked>(true)
     const [showNeurociencia, setShowNeurociencia] = React.useState<Checked>(false)
     const [showCerebro, setShowCerebro] = React.useState<Checked>(false)
 
+    const [showPresentacion, setShowPresentacion] = React.useState<Checked>(false)
+    const [showLibro, setShowLibro] = React.useState<Checked>(false)
+    const [showArticulo, setShowArticulo] = React.useState<Checked>(false)
 
     useEffect(() => {
       setInfo(
         getInfo().filter((item) => {
-          if (showStatusBar && item.status === "anatomia") return true
-          if (showNeurociencia && item.status === "neurociencia") return true
-          if (showCerebro && item.status === "cerebro") return true
-          if(!showStatusBar && !showNeurociencia && !showCerebro) return true
-          return false
+          const filterMateria = (
+            (showAnatomia && item.status === "anatomia") ||
+            (showNeurociencia && item.status === "neurociencia") ||
+            (showCerebro && item.status === "cerebro")
+          );
+    
+      const filterRecurso = (
+            (showPresentacion && item.tag === "Presentación") ||
+            (showLibro && item.tag === "Libro") ||
+            (showArticulo && item.tag === "Artículo")
+          );
+    
+      const noFilterSelected = 
+            !showAnatomia && !showNeurociencia && !showCerebro &&
+            !showPresentacion && !showLibro && !showArticulo;
+    
+      return (
+            noFilterSelected || 
+            (filterMateria && filterRecurso) || 
+            (filterMateria && !showPresentacion && !showLibro && !showArticulo) || 
+            (!showAnatomia && !showNeurociencia && !showCerebro && filterRecurso)
+          );
+    
         })
       )
-    }, [showStatusBar, showNeurociencia, showCerebro])
+    }, [showAnatomia, showNeurociencia, showCerebro, showPresentacion, showArticulo, showLibro])
 
     const [orderBy, setOrderBy] = React.useState('')
 
@@ -186,8 +218,8 @@ const getInfo = () => [
             <DropdownMenuContent className="w-56">
               <DropdownMenuLabel>Selecciona</DropdownMenuLabel>
               <DropdownMenuCheckboxItem
-                checked={showStatusBar}
-                onCheckedChange={setShowStatusBar}
+                checked={showAnatomia}
+                onCheckedChange={setShowAnatomia}
               >
                 Anatomia
               </DropdownMenuCheckboxItem>
@@ -210,20 +242,32 @@ const getInfo = () => [
 
         <div className="flex items-center space-x-3">
           <span className="text-sm">Ordenar por:</span>
-          <Select>
-            <SelectTrigger className="w-[180px] border border-gray-300">
-              <SelectValue placeholder="Selecciona" />
-            </SelectTrigger>
-            <SelectContent>
-              <SelectGroup>
-                <SelectLabel>Recursos</SelectLabel>
-                <SelectItem value="todos">Todos</SelectItem>
-                <SelectItem value="apple">Presentacion</SelectItem>
-                <SelectItem value="banana">Libro</SelectItem>
-                <SelectItem value="blueberry">Articulos</SelectItem>
-              </SelectGroup>
-            </SelectContent>
-          </Select>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <button className="btn-outline">Selecciona</button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent className="w-56">
+              <DropdownMenuLabel>Recursos</DropdownMenuLabel>
+              <DropdownMenuCheckboxItem
+                checked={showPresentacion}
+                onCheckedChange={(checked) => setShowPresentacion(!!checked)}
+              >
+                Presentación
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={showLibro}
+                onCheckedChange={(checked) => setShowLibro(!!checked)}
+              >
+                Libro
+              </DropdownMenuCheckboxItem>
+              <DropdownMenuCheckboxItem
+                checked={showArticulo}
+                onCheckedChange={(checked) => setShowArticulo(!!checked)}
+              >
+                Artículo
+              </DropdownMenuCheckboxItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
         </div>
       </div>
       
